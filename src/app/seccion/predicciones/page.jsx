@@ -1,55 +1,95 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
 import { Airplay, Sun, Cloud, CloudRain, CloudSun } from 'lucide-react';
 
-export default function IAClima() {
+export default function IAClimaProfesional() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [pregunta, setPregunta] = useState('');
   const [respuestas, setRespuestas] = useState([]);
+  const [estados, setEstados] = useState([]);
+  const [isMounted, setIsMounted] = useState(false);
 
-  // Datos simulados por estado de Michoacán
-  const estados = [
-    { nombre: 'Morelia', clima: 'Soleado', temperatura: 25, humedad: 40, calidad: 'Buena' },
-    { nombre: 'Uruapan', clima: 'Nublado', temperatura: 22, humedad: 55, calidad: 'Razonablemente buena' },
-    { nombre: 'Zamora', clima: 'Lluvia ligera', temperatura: 20, humedad: 60, calidad: 'Moderada' },
-    { nombre: 'Lázaro Cárdenas', clima: 'Soleado y húmedo', temperatura: 30, humedad: 50, calidad: 'Alta' },
-    { nombre: 'Zitácuaro', clima: 'Parcialmente nublado', temperatura: 24, humedad: 45, calidad: 'Buena' },
-    { nombre: 'Apatzingán', clima: 'Soleado', temperatura: 28, humedad: 35, calidad: 'Razonablemente buena' },
-  ];
+  // Inicializar datos solo en el cliente
+  useEffect(() => {
+    setEstados([
+      { nombre: 'Morelia', clima: 'Soleado', temperatura: 25, humedad: 40, calidad: 'Buena' },
+      { nombre: 'Uruapan', clima: 'Nublado', temperatura: 22, humedad: 55, calidad: 'Razonablemente buena' },
+      { nombre: 'Zamora', clima: 'Lluvia ligera', temperatura: 20, humedad: 60, calidad: 'Moderada' },
+      { nombre: 'Lázaro Cárdenas', clima: 'Soleado y húmedo', temperatura: 30, humedad: 50, calidad: 'Alta' },
+      { nombre: 'Zitácuaro', clima: 'Parcialmente nublado', temperatura: 24, humedad: 45, calidad: 'Buena' },
+      { nombre: 'Apatzingán', clima: 'Soleado', temperatura: 28, humedad: 35, calidad: 'Razonablemente buena' },
+    ]);
+    setIsMounted(true);
+  }, []);
 
-  // Función que simula la IA
+  // Cambios automáticos de clima y calidad solo en cliente
+  useEffect(() => {
+    if (!isMounted) return;
+
+    const interval = setInterval(() => {
+      setEstados(prev =>
+        prev.map(e => {
+          const tempChange = Math.floor(Math.random() * 3 - 1);
+          const humChange = Math.floor(Math.random() * 5 - 2);
+          let calidad = e.calidad;
+
+          const newTemp = e.temperatura + tempChange;
+          const newHum = e.humedad + humChange;
+
+          if (newTemp < 20 || newHum > 60) calidad = 'Moderada';
+          else if (newTemp >= 20 && newTemp <= 26 && newHum <= 50) calidad = 'Buena';
+          else calidad = 'Razonablemente buena';
+
+          return { ...e, temperatura: newTemp, humedad: newHum, calidad };
+        })
+      );
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, [isMounted]);
+
   const generarRespuesta = (texto) => {
+    if (!isMounted) return 'Cargando datos...';
+
     const lower = texto.toLowerCase();
     let mensaje = '';
 
-    if (lower.includes('morelia')) {
-      const e = estados.find(e => e.nombre.toLowerCase() === 'morelia');
-      mensaje = `📍 Morelia: Clima ${e.clima}, Temperatura ${e.temperatura}°C, Humedad ${e.humedad}%, Calidad del aire: ${e.calidad}.`;
-    } else if (lower.includes('uruapan')) {
-      const e = estados.find(e => e.nombre.toLowerCase() === 'uruapan');
-      mensaje = `📍 Uruapan: Clima ${e.clima}, Temperatura ${e.temperatura}°C, Humedad ${e.humedad}%, Calidad del aire: ${e.calidad}.`;
-    } else if (lower.includes('zamora')) {
-      const e = estados.find(e => e.nombre.toLowerCase() === 'zamora');
-      mensaje = `📍 Zamora: Clima ${e.clima}, Temperatura ${e.temperatura}°C, Humedad ${e.humedad}%, Calidad del aire: ${e.calidad}.`;
-    } else if (lower.includes('lázaro cárdenas')) {
-      const e = estados.find(e => e.nombre.toLowerCase() === 'lázaro cárdenas');
-      mensaje = `📍 Lázaro Cárdenas: Clima ${e.clima}, Temperatura ${e.temperatura}°C, Humedad ${e.humedad}%, Calidad del aire: ${e.calidad}.`;
-    } else if (lower.includes('zitácuaro')) {
-      const e = estados.find(e => e.nombre.toLowerCase() === 'zitácuaro');
-      mensaje = `📍 Zitácuaro: Clima ${e.clima}, Temperatura ${e.temperatura}°C, Humedad ${e.humedad}%, Calidad del aire: ${e.calidad}.`;
-    } else if (lower.includes('apatzingán')) {
-      const e = estados.find(e => e.nombre.toLowerCase() === 'apatzingán');
-      mensaje = `📍 Apatzingán: Clima ${e.clima}, Temperatura ${e.temperatura}°C, Humedad ${e.humedad}%, Calidad del aire: ${e.calidad}.`;
-    } else if (lower.includes('clima')) {
-      mensaje = '🌤 Puedes consultar el clima de cada estado preguntando por el nombre del estado.';
-    } else if (lower.includes('calidad del aire')) {
-      mensaje = '💨 La calidad del aire varía según el estado. Pregunta por un estado específico para obtener los datos.';
-    } else {
-      mensaje = '🤖 Lo siento, no entiendo tu pregunta. Pregunta sobre el clima o la calidad del aire en un estado de Michoacán.';
+    const consejos = [
+      "💨 Evita actividades al aire libre si la calidad del aire es moderada o alta.",
+      "🌤 Disfruta de los días soleados, pero hidrátate adecuadamente.",
+      "☔ Usa paraguas o ropa impermeable si hay lluvias.",
+      "🌫 Evita ejercicio intenso en áreas con contaminación alta.",
+      "🧼 Mantén las ventanas cerradas si la calidad del aire es mala."
+    ];
+
+    const pronosticos = [
+      "Pronóstico semanal: alternancia de días soleados y parcialmente nublados con lluvias ligeras intermitentes.",
+      "La humedad se mantendrá moderada, adecuada para actividades al aire libre.",
+      "Temperaturas en aumento hacia finales de la semana, especialmente en zonas costeras."
+    ];
+
+    const infoGeneral = [
+      "Michoacán cuenta con diversidad climática: zonas costeras cálidas, tierras altas templadas y valles con clima variable.",
+      "La calidad del aire varía según la región y la actividad humana, especialmente en ciudades industriales y urbanas.",
+      "Se recomienda monitorear la calidad del aire diariamente para protección de la salud."
+    ];
+
+    for (let estado of estados) {
+      if (lower.includes(estado.nombre.toLowerCase())) {
+        mensaje = `📍 Estado: ${estado.nombre}\nClima actual: ${estado.clima}\nTemperatura: ${estado.temperatura}°C\nHumedad: ${estado.humedad}%\nCalidad del aire: ${estado.calidad}\nConsejo: ${consejos[Math.floor(Math.random()*consejos.length)]}\nPronóstico: ${pronosticos[Math.floor(Math.random()*pronosticos.length)]}`;
+        return mensaje;
+      }
     }
+
+    if (lower.includes('clima')) mensaje = "🌤 Puedes preguntar por el clima de cualquier estado para obtener información detallada y consejos.";
+    else if (lower.includes('calidad del aire')) mensaje = "💨 La calidad del aire varía según el estado y las condiciones ambientales. Pregunta por un estado específico para recibir detalles precisos.";
+    else if (lower.includes('pronóstico')) mensaje = "🗓 El pronóstico indica días soleados y parcialmente nublados, con lluvias ligeras intermitentes según la región de Michoacán.";
+    else if (lower.includes('información general') || lower.includes('info general')) mensaje = infoGeneral[Math.floor(Math.random()*infoGeneral.length)];
+    else if (lower.includes('recomendación') || lower.includes('consejo')) mensaje = consejos[Math.floor(Math.random()*consejos.length)];
+    else mensaje = "🤖 Lo siento, no entendí tu pregunta. Puedes consultar sobre clima, calidad del aire, pronósticos o información general de un estado específico de Michoacán.";
 
     return mensaje;
   };
@@ -57,13 +97,11 @@ export default function IAClima() {
   const enviarPregunta = () => {
     if (!pregunta.trim()) return;
 
-    // Agrega la pregunta y la respuesta
     const nuevaRespuesta = generarRespuesta(pregunta);
     setRespuestas([...respuestas, { pregunta, respuesta: nuevaRespuesta }]);
     setPregunta('');
   };
 
-  // Función para mostrar iconos según clima
   const renderIcon = (clima) => {
     const lower = clima.toLowerCase();
     if (lower.includes('soleado')) return <Sun size={32} className="text-yellow-400" />;
@@ -73,6 +111,8 @@ export default function IAClima() {
     return <Sun size={32} className="text-yellow-400" />;
   };
 
+  if (!isMounted) return null; // Evitar mismatch SSR
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
@@ -81,10 +121,9 @@ export default function IAClima() {
         <main className="flex flex-col items-center justify-start p-6 md:p-8 flex-1">
 
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 text-center">
-            🤖 Asistente de Clima y Calidad del Aire - Michoacán
+            🤖 Asistente Profesional de Clima y Calidad del Aire - Michoacán
           </h1>
 
-          {/* Lista de estados */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl mb-10">
             {estados.map((estado, idx) => (
               <div key={idx} className="bg-white rounded-xl shadow-lg p-5 flex flex-col items-center border-l-4 border-blue-400 transition transform hover:-translate-y-1 hover:shadow-2xl">
@@ -97,10 +136,9 @@ export default function IAClima() {
             ))}
           </div>
 
-          {/* Chat IA */}
           <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-3xl flex flex-col gap-4">
             <h2 className="text-xl font-bold text-gray-800 mb-2 flex items-center gap-2">
-              <Airplay size={28} /> Pregúntame sobre clima y calidad del aire
+              <Airplay size={28} /> Pregúntame sobre clima, calidad del aire y pronósticos
             </h2>
 
             <textarea
@@ -120,7 +158,7 @@ export default function IAClima() {
 
             <div className="flex flex-col gap-3 mt-2">
               {respuestas.map((item, idx) => (
-                <div key={idx} className="bg-blue-50 p-4 rounded-xl border-l-4 border-blue-400 text-gray-800">
+                <div key={idx} className="bg-blue-50 p-4 rounded-xl border-l-4 border-blue-400 text-gray-800 whitespace-pre-line">
                   <p className="font-semibold mb-1">Tú: {item.pregunta}</p>
                   <p>🤖 IA: {item.respuesta}</p>
                 </div>

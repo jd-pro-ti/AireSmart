@@ -1,127 +1,127 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { GoogleMap, Marker, InfoWindow, useJsApiLoader } from '@react-google-maps/api';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
-import { MapPin, Sun, Cloud, CloudRain } from 'lucide-react';
 
-export default function MapaCalidad() {
+// Coordenadas de ciudades principales de Michoacán
+const ciudades = [
+  { nombre: 'Morelia', lat: 19.7008, lng: -101.1844 },
+  { nombre: 'Uruapan', lat: 19.4216, lng: -102.0576 },
+  { nombre: 'Zamora', lat: 19.9856, lng: -102.2833 },
+  { nombre: 'Lázaro Cárdenas', lat: 17.9589, lng: -102.2 },
+  { nombre: 'Zitácuaro', lat: 19.4361, lng: -100.3573 },
+  { nombre: 'Apatzingán', lat: 19.0833, lng: -102.35 }
+];
+
+export default function MapaGoogleMichoacan() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [selectedCiudad, setSelectedCiudad] = useState(null);
+  const [ciudadSeleccionada, setCiudadSeleccionada] = useState(null);
+  const [datosCiudades, setDatosCiudades] = useState({});
 
-  // Datos de ciudades simulados
-  const ciudades = [
-    { nombre: 'Morelia', top: '30%', left: '50%' },
-    { nombre: 'Uruapan', top: '50%', left: '30%' },
-    { nombre: 'Zamora', top: '25%', left: '20%' },
-    { nombre: 'Lázaro Cárdenas', top: '80%', left: '70%' },
-    { nombre: 'Zitácuaro', top: '40%', left: '60%' },
-    { nombre: 'Apatzingán', top: '65%', left: '35%' },
-  ];
+  // Cargar Google Maps
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSyAv0uz48-sIpfzDw2MKVryibebp95izmNU'
+  });
 
-  // Función para generar datos aleatorios de clima/calidad
-  const generarDatos = () => {
-    const calidades = ['Buena', 'Moderada', 'Mala'];
-    const climas = ['Soleado', 'Nublado', 'Lluvias ligeras', 'Tormenta'];
-    return ciudades.map(c => ({
-      ...c,
-      calidad: calidades[Math.floor(Math.random() * calidades.length)],
-      clima: climas[Math.floor(Math.random() * climas.length)],
-      temperatura: Math.floor(Math.random() * 10) + 20, // 20-30°C
-      nivel: Math.floor(Math.random() * 150) + 30, // AQI simulado
-    }));
-  };
-
-  const [datos, setDatos] = useState(generarDatos());
-
-  // Actualizar datos cada 15 segundos simulando tiempo real
+  // Llamar datos desde OpenWeather (Clima + Calidad de aire)
   useEffect(() => {
-    const interval = setInterval(() => setDatos(generarDatos()), 15000);
+    const fetchDatos = async () => {
+      const result = {};
+      for (const c of ciudades) {
+        try {
+          // Clima
+          const climaRes = await fetch(
+            `https://api.openweathermap.org/data/2.5/weather?lat=${c.lat}&lon=${c.lng}&units=metric&lang=es&appid=${process.env.NEXT_PUBLIC_OPENWEATHER_KEY}`
+          );
+          const climaData = await climaRes.json();
+
+          // Calidad de aire
+          const aireRes = await fetch(
+            `https://api.openweathermap.org/data/2.5/air_pollution?lat=${c.lat}&lon=${c.lng}&appid=${process.env.NEXT_PUBLIC_OPENWEATHER_KEY}`
+          );
+          const aireData = await aireRes.json();
+
+          result[c.nombre] = {
+            clima: climaData.weather?.[0]?.description || 'N/A',
+            temp: climaData.main?.temp || '-',
+            humedad: climaData.main?.humidity || '-',
+            aqi: aireData.list?.[0]?.main?.aqi || null
+          };
+        } catch {
+          result[c.nombre] = { clima: 'N/A', temp: '-', humedad: '-', aqi: null };
+        }
+      }
+      setDatosCiudades(result);
+    };
+
+    fetchDatos();
+    const interval = setInterval(fetchDatos, 300000); // cada 5 minutos
     return () => clearInterval(interval);
   }, []);
 
-  const getColor = (nivel) => {
-    if (nivel <= 50) return 'bg-green-400';
-    if (nivel <= 100) return 'bg-yellow-400';
-    if (nivel <= 150) return 'bg-orange-500';
-    return 'bg-red-500';
+  // Definir color de icono según AQI
+  const getIcon = (aqi) => {
+    switch (aqi) {
+      case 1: return "http://maps.google.com/mapfiles/ms/icons/green-dot.png";   // Bueno
+      case 2: return "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png";  // Moderado
+      case 3: return "http://maps.google.com/mapfiles/ms/icons/orange-dot.png";  // Poco saludable
+      case 4: return "http://maps.google.com/mapfiles/ms/icons/red-dot.png";     // Malo
+      case 5: return "http://maps.google.com/mapfiles/ms/icons/purple-dot.png";  // Muy malo
+      default: return "http://maps.google.com/mapfiles/ms/icons/blue-dot.png";   // Desconocido
+    }
   };
 
-  const getClimaIcon = (clima) => {
-    if (clima === 'Soleado') return <Sun size={28} className="text-yellow-500" />;
-    if (clima === 'Nublado') return <Cloud size={28} className="text-gray-400" />;
-    return <CloudRain size={28} className="text-blue-400" />;
-  };
+  if (!isLoaded) return <p className="text-center mt-10">Cargando mapa…</p>;
 
   return (
-    <div className="flex min-h-screen bg-blue-50">
+    <div className="flex min-h-screen flex-col bg-blue-50">
       <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <main className={`flex-1 flex flex-col items-center pt-20 p-6 ${sidebarOpen ? 'ml-64' : 'ml-16'}`}>
+        <h1 className="text-3xl font-bold mb-6 text-center text-black">
+          📍 Mapa de Michoacán — Clima y Calidad del Aire
+        </h1>
 
-      <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-16'}`}>
-        <main className="flex flex-col items-center justify-start p-6 flex-1">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6 text-center">
-            🗺 Mapa de Calidad de Aire - Michoacán
-          </h1>
-
-          <div className="relative w-full max-w-6xl h-[600px] bg-gray-200 rounded-xl shadow-lg overflow-hidden">
-            <img
-              src="/imagenes/mapa_michoacan.jpg"
-              alt="Mapa Michoacán"
-              className="w-full h-full object-cover"
-            />
-
-            {/* Marcadores */}
-            {datos.map((ciudad, idx) => (
-              <div
+        <div className="w-full max-w-6xl h-[600px] rounded-xl shadow-lg overflow-hidden">
+          <GoogleMap
+            center={{ lat: 19.5, lng: -101.5 }}
+            zoom={7}
+            mapContainerStyle={{ width: '100%', height: '100%' }}
+          >
+            {ciudades.map((c, idx) => (
+              <Marker
                 key={idx}
-                className="absolute cursor-pointer flex flex-col items-center"
-                style={{ top: ciudad.top, left: ciudad.left, transform: 'translate(-50%, -100%)' }}
-                onClick={() => setSelectedCiudad(ciudad)}
-              >
-                <MapPin size={32} className={getColor(ciudad.nivel)} />
-              </div>
+                position={{ lat: c.lat, lng: c.lng }}
+                onClick={() => setCiudadSeleccionada(c.nombre)}
+                icon={{
+                  url: getIcon(datosCiudades[c.nombre]?.aqi),
+                  scaledSize: new window.google.maps.Size(40, 40) // tamaño del icono
+                }}
+              />
             ))}
 
-            {/* Modal de información */}
-            {selectedCiudad && (
-              <div className="absolute inset-0 flex justify-center items-center z-50">
-                <div
-                  className="absolute inset-0 bg-black/30"
-                  onClick={() => setSelectedCiudad(null)}
-                ></div>
-
-                <div className="bg-white rounded-2xl p-6 shadow-2xl relative z-10 text-center max-w-xs">
-                  <button
-                    className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 font-bold"
-                    onClick={() => setSelectedCiudad(null)}
-                  >
-                    ✖
-                  </button>
-                  <h2 className="text-2xl font-bold mb-2">{selectedCiudad.nombre}</h2>
-                  <p className="text-gray-700 mb-2">
-                    Calidad del aire:{' '}
-                    <span className={`font-bold px-2 rounded text-white ${getColor(selectedCiudad.nivel)}`}>
-                      {selectedCiudad.calidad}
-                    </span>
-                  </p>
-                  <p className="text-gray-700 mb-2">Nivel AQI: {selectedCiudad.nivel}</p>
-                  <p className="text-gray-700 mb-2">Clima: {selectedCiudad.clima}</p>
-                  <p className="text-gray-700 mb-4">Temperatura: {selectedCiudad.temperatura}°C</p>
-                  <div className="flex justify-center mb-2">{getClimaIcon(selectedCiudad.clima)}</div>
-                  <button
-                    className="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                    onClick={() => setSelectedCiudad(null)}
-                  >
-                    Cerrar
-                  </button>
+            {ciudadSeleccionada && datosCiudades[ciudadSeleccionada] && (
+              <InfoWindow
+                position={{
+                  lat: ciudades.find(c => c.nombre === ciudadSeleccionada).lat,
+                  lng: ciudades.find(c => c.nombre === ciudadSeleccionada).lng
+                }}
+                onCloseClick={() => setCiudadSeleccionada(null)}
+              >
+                <div className="text-center text-black">
+                  <h2 className="text-lg font-bold mb-1">{ciudadSeleccionada}</h2>
+                  <p>🌤 {datosCiudades[ciudadSeleccionada].clima}</p>
+                  <p>🌡 {datosCiudades[ciudadSeleccionada].temp}°C</p>
+                  <p>💧 Humedad: {datosCiudades[ciudadSeleccionada].humedad}%</p>
+                  <p>🌫 AQI: {datosCiudades[ciudadSeleccionada].aqi || 'N/A'}</p>
                 </div>
-              </div>
+              </InfoWindow>
             )}
-
-          </div>
-        </main>
-        <Footer />
-      </div>
+          </GoogleMap>
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 }

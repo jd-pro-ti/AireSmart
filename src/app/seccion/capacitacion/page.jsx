@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
 import { Play, Pause, X } from 'lucide-react';
@@ -9,7 +9,7 @@ import { Play, Pause, X } from 'lucide-react';
 const secciones = [
   {
     titulo: "Introducción a la App",
-    descripcion: "Conoce la finalidad de la aplicación, sus funciones principales y cómo puede ayudarte a gestionar tus tareas o inventarios de manera eficiente.",
+    descripcion: "Conoce la finalidad de la aplicación y sus funciones principales.",
     detalles: [
       "La app fue diseñada para optimizar tus procesos.",
       "Puedes acceder a todas las funciones desde el menú principal.",
@@ -18,7 +18,7 @@ const secciones = [
   },
   {
     titulo: "Registro y Acceso",
-    descripcion: "Aprende a crear tu cuenta, iniciar sesión y recuperar tu contraseña si es necesario. Todo de manera segura y rápida.",
+    descripcion: "Aprende a crear tu cuenta, iniciar sesión y recuperar tu contraseña de manera segura.",
     detalles: [
       "Para registrarte necesitas un correo válido y contraseña segura.",
       "Si olvidas tu contraseña, la app te guiará paso a paso para recuperarla.",
@@ -27,7 +27,7 @@ const secciones = [
   },
   {
     titulo: "Navegación General",
-    descripcion: "Explora cómo moverte dentro de la app, identificar los menús principales y acceder a cada sección sin complicaciones.",
+    descripcion: "Explora cómo moverte dentro de la app y acceder a cada sección sin complicaciones.",
     detalles: [
       "La barra lateral te permite cambiar de módulo rápidamente.",
       "Cada módulo tiene submenús para organizar las funcionalidades.",
@@ -36,7 +36,7 @@ const secciones = [
   },
   {
     titulo: "Gestión de Inventarios",
-    descripcion: "Aprende a agregar, modificar y eliminar productos o muestras. Conoce también cómo generar reportes y consultar historial.",
+    descripcion: "Aprende a agregar, modificar y eliminar productos o muestras y generar reportes.",
     detalles: [
       "Puedes añadir productos con detalles completos de cada ítem.",
       "Modificar o eliminar registros es rápido y seguro.",
@@ -45,7 +45,7 @@ const secciones = [
   },
   {
     titulo: "Seguridad y Roles",
-    descripcion: "Entiende cómo se manejan los permisos dentro de la app, quién puede acceder a cada módulo y cómo proteger tus datos.",
+    descripcion: "Entiende cómo se manejan los permisos dentro de la app y cómo proteger tus datos.",
     detalles: [
       "Cada usuario tiene permisos según su rol asignado.",
       "Se controla el acceso a módulos sensibles para proteger la información.",
@@ -54,7 +54,7 @@ const secciones = [
   },
   {
     titulo: "Soporte y Ayuda",
-    descripcion: "Conoce los canales de ayuda disponibles y cómo reportar problemas o dudas para recibir asistencia rápidamente.",
+    descripcion: "Conoce los canales de ayuda disponibles y cómo reportar problemas para recibir asistencia rápidamente.",
     detalles: [
       "La sección de soporte permite enviar tickets de ayuda.",
       "También se incluyen tutoriales y documentación en línea.",
@@ -72,7 +72,7 @@ export default function CapacitacionIA() {
   // Función para iniciar voz
   const speakText = (text) => {
     if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel(); // cancela voz previa
+      window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'es-MX';
       utterance.onend = () => setSpeaking(false);
@@ -81,7 +81,6 @@ export default function CapacitacionIA() {
     }
   };
 
-  // Mostrar siguiente detalle
   const nextStep = () => {
     if (selected && currentStep < selected.detalles.length - 1) {
       setCurrentStep(currentStep + 1);
@@ -89,7 +88,6 @@ export default function CapacitacionIA() {
     }
   };
 
-  // Mostrar detalle previo
   const prevStep = () => {
     if (selected && currentStep > 0) {
       setCurrentStep(currentStep - 1);
@@ -97,14 +95,12 @@ export default function CapacitacionIA() {
     }
   };
 
-  // Abrir sección
   const openSeccion = (sec) => {
     setSelected(sec);
     setCurrentStep(0);
     speakText(sec.detalles[0]);
   };
 
-  // Cerrar modal
   const closeModal = () => {
     setSelected(null);
     window.speechSynthesis.cancel();
@@ -135,7 +131,7 @@ export default function CapacitacionIA() {
             ))}
           </div>
 
-          {/* Modal de explicación IA */}
+          {/* Modal de explicación IA + video de señas */}
           {selected && (
             <div className="fixed inset-0 flex justify-center items-center z-50">
               <div
@@ -143,7 +139,7 @@ export default function CapacitacionIA() {
                 onClick={closeModal}
               ></div>
 
-              <div className="bg-white rounded-2xl p-6 w-11/12 max-w-lg shadow-2xl relative z-10">
+              <div className="bg-white rounded-2xl p-6 w-11/12 max-w-lg shadow-2xl relative z-10 flex flex-col items-center gap-4">
                 <button
                   className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
                   onClick={closeModal}
@@ -154,7 +150,18 @@ export default function CapacitacionIA() {
                 <h2 className="text-2xl font-bold mb-4">{selected.titulo}</h2>
                 <p className="text-gray-700 mb-4">{selected.detalles[currentStep]}</p>
 
-                <div className="flex justify-between items-center mt-4">
+                {/* Video de señas explicativo */}
+                <div className="w-full max-w-sm h-48 overflow-hidden rounded-xl shadow-md mb-4">
+                  <video
+                    src="/videos/senas_explicativo.mp4"
+                    autoPlay
+                    loop
+                    muted
+                    className="w-full h-full object-contain rounded-xl"
+                  />
+                </div>
+
+                <div className="flex justify-between items-center mt-4 w-full">
                   <button
                     onClick={prevStep}
                     disabled={currentStep === 0}
