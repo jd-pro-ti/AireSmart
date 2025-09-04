@@ -1,10 +1,9 @@
 'use client'
 import React from 'react'
+import Index from './seccion/index'   // importa tu index.jsx
 
-function page() {
-  return (
-    <div>page</div>
-  )
+function Page() {
+  return <Index />   // muestra el index.jsx
 }
 
-export default page
+export default Page
