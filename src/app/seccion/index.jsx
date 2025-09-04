@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react';
 import Footer from '../components/footer';
-import Header from '../components/heder';
+import Header from '../components/header';
 
 const Home = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
