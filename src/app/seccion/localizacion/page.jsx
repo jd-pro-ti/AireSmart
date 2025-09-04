@@ -1,9 +1,14 @@
 'use client'
-import React from "react";
+import {useState} from "react";
+import Footer from '../../components/footer';
+import Header from '../../components/header';
 
 export default function localizacion() {
+      const [sidebarOpen, setSidebarOpen] = useState(false);
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col p-6">
+          {/* Header */}
+      <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
       <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
         🌍 Ubicaciones y Clima en Michoacán
       </h1>
@@ -34,6 +39,7 @@ export default function localizacion() {
           <p className="text-sm text-gray-600">Temperatura: 30°C</p>
         </div>
       </div>
+      <Footer></Footer>
     </div>
   );
 }
