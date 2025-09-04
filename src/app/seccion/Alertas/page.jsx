@@ -37,69 +37,79 @@ export default function Alertas() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-blue-50">
       {/* Sidebar */}
       <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
       {/* Contenido principal */}
-      <main className="flex-1 flex flex-col items-center justify-start p-4 md:p-6 ml-16 md:ml-64">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
-          🔔 Alertas y Notificaciones
-        </h1>
+      <div
+        className={`flex-1 flex flex-col transition-all duration-300 
+        ${sidebarOpen ? 'ml-64' : 'ml-16'}`}
+      >
+        <main className="flex flex-col items-center justify-start p-6 md:p-8 flex-1">
+          {/* Encabezado */}
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-center">
+            🔔 Alertas y Notificaciones
+          </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl justify-center">
-          {alertas.map((alerta) => (
-            <div
-              key={alerta.id}
-              className="bg-white/80 backdrop-blur-md shadow-lg rounded-xl p-5 cursor-pointer transition transform hover:-translate-y-1 hover:shadow-2xl flex items-center gap-3"
-              onClick={() => setSelectedAlerta(alerta)}
-            >
-              {alerta.alerta ? (
-                <Bell size={28} className="text-red-500" />
-              ) : (
-                <Info size={28} className="text-green-500" />
-              )}
-              <div>
-                <h2 className="font-semibold text-lg mb-1">{alerta.tipo}</h2>
-                <p className="text-sm text-gray-700">{alerta.mensaje}</p>
-                <p className="text-xs text-gray-400 mt-1">{alerta.fecha}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Modal */}
-        {selectedAlerta && (
-          <div className="fixed inset-0 flex justify-center items-center z-50">
-            {/* Fondo transparente */}
-            <div
-              className="absolute inset-0 bg-white/20 backdrop-blur-sm"
-              onClick={() => setSelectedAlerta(null)}
-            ></div>
-
-            {/* Contenido del modal */}
-            <div className="bg-white/90 backdrop-blur-md rounded-xl p-6 w-11/12 max-w-md shadow-2xl relative z-10 text-center">
-              <button
-                className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 font-bold"
-                onClick={() => setSelectedAlerta(null)}
-              >
-                ✖
-              </button>
-              {selectedAlerta.alerta ? (
-                <Bell size={32} className="mx-auto mb-2 text-red-500" />
-              ) : (
-                <Info size={32} className="mx-auto mb-2 text-green-500" />
-              )}
-              <h2 className="text-xl font-bold mb-2">{selectedAlerta.tipo}</h2>
-              <p className="text-gray-700 mb-2">{selectedAlerta.mensaje}</p>
-              <p className="text-gray-500 text-sm mb-4">{selectedAlerta.fecha}</p>
-              <p className="text-gray-600">{selectedAlerta.detalle}</p>
+          {/* Cards de alertas */}
+          <div className="flex-1 flex items-center justify-center w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
+              {alertas.map((alerta) => (
+                <div
+                  key={alerta.id}
+                  className="bg-white shadow-md rounded-xl p-5 cursor-pointer transition transform hover:-translate-y-1 hover:shadow-lg flex items-start gap-4"
+                  onClick={() => setSelectedAlerta(alerta)}
+                >
+                  {alerta.alerta ? (
+                    <Bell size={30} className="text-red-500 shrink-0" />
+                  ) : (
+                    <Info size={30} className="text-green-500 shrink-0" />
+                  )}
+                  <div className="flex flex-col">
+                    <h2 className="font-bold text-lg text-black">{alerta.tipo}</h2>
+                    <p className="text-sm text-gray-700">{alerta.mensaje}</p>
+                    <p className="text-xs text-gray-400 mt-1">{alerta.fecha}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        )}
 
+          {/* Modal */}
+          {selectedAlerta && (
+            <div className="fixed inset-0 flex justify-center items-center z-50">
+              {/* Fondo transparente */}
+              <div
+                className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                onClick={() => setSelectedAlerta(null)}
+              ></div>
+
+              {/* Contenido del modal */}
+              <div className="bg-white rounded-xl p-6 w-11/12 max-w-md shadow-2xl relative z-10 text-center">
+                <button
+                  className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 font-bold"
+                  onClick={() => setSelectedAlerta(null)}
+                >
+                  ✖
+                </button>
+                {selectedAlerta.alerta ? (
+                  <Bell size={36} className="mx-auto mb-3 text-red-500" />
+                ) : (
+                  <Info size={36} className="mx-auto mb-3 text-green-500" />
+                )}
+                <h2 className="text-xl font-bold text-black mb-2">{selectedAlerta.tipo}</h2>
+                <p className="text-gray-700 mb-2">{selectedAlerta.mensaje}</p>
+                <p className="text-gray-500 text-sm mb-4">{selectedAlerta.fecha}</p>
+                <p className="text-gray-600">{selectedAlerta.detalle}</p>
+              </div>
+            </div>
+          )}
+        </main>
+
+        {/* Footer */}
         <Footer />
-      </main>
+      </div>
     </div>
   );
 }

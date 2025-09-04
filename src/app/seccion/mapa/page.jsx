@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import React, { useState } from 'react';
 import Header from '../../components/header';
@@ -30,72 +30,75 @@ export default function MapaCalidad() {
       <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
       {/* Contenido principal */}
-      <main className="flex-1 flex flex-col items-center justify-start p-4 md:p-6 ml-16 md:ml-64">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
-          🗺 Mapa de Calidad de Aire
-        </h1>
+      <div
+        className={`flex-1 flex flex-col transition-all duration-300 
+        ${sidebarOpen ? 'ml-64' : 'ml-16'}`}
+      >
+        <main className="flex flex-col items-center justify-start p-4 md:p-6 flex-1">
+          <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+            🗺 Mapa de Calidad de Aire
+          </h1>
 
-        {/* Mapa */}
-        <div className="relative w-full max-w-6xl h-[500px] bg-gray-200 rounded-xl shadow-lg overflow-hidden">
-          <img
-            src="/imagenes/mapa_michoacan.jpg" // tu imagen de mapa
-            alt="Mapa Michoacán"
-            className="w-full h-full object-cover"
-          />
+          {/* Mapa */}
+          <div className="relative w-full max-w-6xl h-[500px] bg-gray-200 rounded-xl shadow-lg overflow-hidden">
+            <img
+              src="/imagenes/mapa_michoacan.jpg" // tu imagen de mapa
+              alt="Mapa Michoacán"
+              className="w-full h-full object-cover"
+            />
 
-          {/* Marcadores */}
-          {ciudades.map((ciudad, idx) => (
-            <div
-              key={idx}
-              className="absolute cursor-pointer flex flex-col items-center"
-              style={{
-                top: ciudad.top,
-                left: ciudad.left,
-                transform: 'translate(-50%, -100%)'
-              }}
-              onClick={() => setSelectedCiudad(ciudad)}
-            >
-              <MapPin size={28} className={getColor(ciudad.nivel)} />
-            </div>
-          ))}
-
-          {/* Modal de información */}
-          {selectedCiudad && (
-            <div className="absolute inset-0 flex justify-center items-center z-50">
+            {/* Marcadores */}
+            {ciudades.map((ciudad, idx) => (
               <div
-                className="absolute inset-0 bg-black/30"
-                onClick={() => setSelectedCiudad(null)}
-              ></div>
-
-              <div className="bg-white rounded-xl p-6 shadow-2xl relative z-10 text-center max-w-xs">
-                <button
-                  className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 font-bold"
-                  onClick={() => setSelectedCiudad(null)}
-                >
-                  ✖
-                </button>
-                <h2 className="text-xl font-bold mb-2">{selectedCiudad.nombre}</h2>
-                <p className="text-gray-700 mb-1">
-                  Calidad:{' '}
-                  <span
-                    className={`font-bold ${getColor(selectedCiudad.nivel)} text-white px-2 rounded`}
-                  >
-                    {selectedCiudad.calidad}
-                  </span>
-                </p>
-                <p className="text-gray-500 text-sm">
-                  Nivel AQI: {selectedCiudad.nivel}
-                </p>
+                key={idx}
+                className="absolute cursor-pointer flex flex-col items-center"
+                style={{
+                  top: ciudad.top,
+                  left: ciudad.left,
+                  transform: 'translate(-50%, -100%)'
+                }}
+                onClick={() => setSelectedCiudad(ciudad)}
+              >
+                <MapPin size={28} className={getColor(ciudad.nivel)} />
               </div>
-            </div>
-          )}
-        </div>
+            ))}
+
+            {/* Modal de información */}
+            {selectedCiudad && (
+              <div className="absolute inset-0 flex justify-center items-center z-50">
+                <div
+                  className="absolute inset-0 bg-black/30"
+                  onClick={() => setSelectedCiudad(null)}
+                ></div>
+
+                <div className="bg-white rounded-xl p-6 shadow-2xl relative z-10 text-center max-w-xs">
+                  <button
+                    className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 font-bold"
+                    onClick={() => setSelectedCiudad(null)}
+                  >
+                    ✖
+                  </button>
+                  <h2 className="text-xl font-bold mb-2">{selectedCiudad.nombre}</h2>
+                  <p className="text-gray-700 mb-1">
+                    Calidad:{' '}
+                    <span
+                      className={`font-bold ${getColor(selectedCiudad.nivel)} text-white px-2 rounded`}
+                    >
+                      {selectedCiudad.calidad}
+                    </span>
+                  </p>
+                  <p className="text-gray-500 text-sm">
+                    Nivel AQI: {selectedCiudad.nivel}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        </main>
 
         {/* Footer */}
-        <div className="w-full mt-6">
-          <Footer />
-        </div>
-      </main>
+        <Footer />
+      </div>
     </div>
   );
 }

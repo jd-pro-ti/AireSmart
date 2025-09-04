@@ -39,33 +39,36 @@ export default function Predicciones() {
       <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
       {/* Contenido principal */}
-      <main className="flex-1 flex flex-col items-center justify-start p-4 md:p-6 ml-16 md:ml-64">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
-          🌤 Predicciones del Clima
-        </h1>
+      <div
+        className={`flex-1 flex flex-col transition-all duration-300 
+        ${sidebarOpen ? 'ml-64' : 'ml-16'}`}
+      >
+        <main className="flex flex-col items-center justify-start p-4 md:p-6 flex-1">
+          <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+            🌤 Predicciones del Clima
+          </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 w-full max-w-6xl">
-          {pronostico.map((dia, idx) => (
-            <div
-              key={idx}
-              className="bg-white rounded-xl shadow-lg p-5 flex flex-col items-center transition transform hover:-translate-y-1 hover:shadow-2xl"
-            >
-              <h2 className="font-semibold text-lg">{dia.dia}</h2>
-              <p className="text-sm text-gray-400">{dia.fecha}</p>
-              {/* Icono */}
-              {renderIcon(dia.icon)}
-              <p className="text-gray-600 capitalize">{dia.descripcion}</p>
-              <p className="mt-2 text-lg font-bold">{dia.temp}°C</p>
-              <p className="text-sm text-gray-500">Humedad: {dia.humedad}%</p>
-            </div>
-          ))}
-        </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 w-full max-w-6xl">
+            {pronostico.map((dia, idx) => (
+              <div
+                key={idx}
+                className="bg-white rounded-xl shadow-lg p-5 flex flex-col items-center transition transform hover:-translate-y-1 hover:shadow-2xl"
+              >
+                <h2 className="font-semibold text-lg">{dia.dia}</h2>
+                <p className="text-sm text-gray-400">{dia.fecha}</p>
+                {/* Icono */}
+                {renderIcon(dia.icon)}
+                <p className="text-gray-600 capitalize">{dia.descripcion}</p>
+                <p className="mt-2 text-lg font-bold">{dia.temp}°C</p>
+                <p className="text-sm text-gray-500">Humedad: {dia.humedad}%</p>
+              </div>
+            ))}
+          </div>
+        </main>
 
         {/* Footer */}
-        <div className="w-full mt-6">
-          <Footer />
-        </div>
-      </main>
+        <Footer />
+      </div>
     </div>
   );
 }

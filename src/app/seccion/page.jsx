@@ -4,8 +4,6 @@ import Footer from '../components/footer';
 import Header from '../components/header';
 import { Car, RefreshCw, CircleDot } from "lucide-react";
 
-
-// 📌 Datos de calidad del aire por ciudad de Michoacán
 const ciudades = [
   {
     nombre: "Morelia",
@@ -39,7 +37,6 @@ const ciudades = [
   }
 ];
 
-// 📌 Componente para cada tarjeta
 const AirQualityCard = ({ ciudad }) => {
   return (
     <div className="bg-[#EAF3F5] rounded-xl shadow-md p-6 mb-6">
@@ -96,31 +93,34 @@ const AirQualityCard = ({ ciudad }) => {
   );
 };
 
-// 📌 Página principal
 export default function Page() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col">
-      {/* Header */}
+    <div className="min-h-screen bg-gray-100 flex">
+      {/* Sidebar */}
       <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
-      {/* Contenido */}
-      <main className="p-6 flex-1">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-          CALIDAD DEL AIRE EN TIEMPO REAL - MICHOACÁN
-        </h2>
+      {/* Contenido principal */}
+      <div
+  className={`flex-1 flex flex-col transition-all duration-300 
+  ${sidebarOpen ? 'ml-64' : 'ml-16'}`}
+>
+        <main className="p-6 flex-1">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+            CALIDAD DEL AIRE EN TIEMPO REAL - MICHOACÁN
+          </h2>
 
-        {/* Renderizar tarjetas */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {ciudades.map((c, i) => (
-            <AirQualityCard key={i} ciudad={c} />
-          ))}
-        </div>
-      </main>
+          {/* Renderizar tarjetas */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {ciudades.map((c, i) => (
+              <AirQualityCard key={i} ciudad={c} />
+            ))}
+          </div>
+        </main>
 
-      {/* Footer */}
-      <Footer />
+        <Footer />
+      </div>
     </div>
   );
 }
