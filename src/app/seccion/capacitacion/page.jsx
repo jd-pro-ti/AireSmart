@@ -3,62 +3,49 @@
 import React, { useState } from 'react';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
-import { Play, Pause, X } from 'lucide-react';
+import { Play, Pause, X, BookOpen } from 'lucide-react';
 
+// ✅ Definimos las secciones de capacitación para AireSmart
 const secciones = [
   {
-    titulo: "Introducción a la App",
-    descripcion: "Conoce la finalidad de la aplicación y sus funciones principales.",
+    titulo: "Uso del Sistema",
+    descripcion: "Aprende cómo navegar en AireSmart, desde el inicio de sesión hasta el monitoreo en tiempo real.",
     detalles: [
-      "La app fue diseñada para optimizar tus procesos.",
-      "Puedes acceder a todas las funciones desde el menú principal.",
-      "Se busca mejorar la eficiencia y reducir errores manuales."
-    ]
+      "Bienvenido a AireSmart, una plataforma diseñada para monitorear la calidad del aire en tiempo real.",
+      "El sistema permite visualizar mapas interactivos, reportes automáticos y notificaciones instantáneas.",
+      "Puedes acceder a información específica de tu ciudad y consultar la calidad del aire clasificada por colores.",
+      "La plataforma está diseñada con un enfoque amigable, intuitivo y adaptable para todo tipo de usuarios.",
+    ],
   },
   {
-    titulo: "Registro y Acceso",
-    descripcion: "Aprende a crear tu cuenta, iniciar sesión y recuperar tu contraseña de manera segura.",
+    titulo: "Calidad del Aire",
+    descripcion: "Conoce los niveles de calidad y cómo interpretarlos.",
     detalles: [
-      "Para registrarte necesitas un correo válido y contraseña segura.",
-      "Si olvidas tu contraseña, la app te guiará paso a paso para recuperarla.",
-      "Todos los datos se manejan de forma segura y encriptada."
-    ]
+      "La calidad del aire se mide en función de contaminantes clave: PM2.5, PM10, Ozono (O₃), Dióxido de Nitrógeno (NO₂) y otros.",
+      "Los colores ayudan a interpretar los niveles: Verde = Bueno, Amarillo = Moderado, Rojo = Malo.",
+      "Estos niveles se actualizan en tiempo real para que siempre tengas información confiable.",
+      "AireSmart integra alertas preventivas para proteger tu salud en caso de altos niveles de contaminación.",
+    ],
   },
   {
-    titulo: "Navegación General",
-    descripcion: "Explora cómo moverte dentro de la app y acceder a cada sección sin complicaciones.",
+    titulo: "Seguridad y Salud",
+    descripcion: "Recomendaciones para cuidar tu salud según el nivel de contaminación.",
     detalles: [
-      "La barra lateral te permite cambiar de módulo rápidamente.",
-      "Cada módulo tiene submenús para organizar las funcionalidades.",
-      "Los iconos ayudan a identificar acciones importantes visualmente."
-    ]
+      "En nivel Verde: Actividades al aire libre son seguras.",
+      "En nivel Amarillo: Precaución para personas sensibles (niños, adultos mayores, asmáticos).",
+      "En nivel Rojo: Se recomienda evitar actividades al aire libre y utilizar cubrebocas.",
+      "AireSmart envía notificaciones automáticas según tu ubicación y nivel de contaminación.",
+    ],
   },
   {
-    titulo: "Gestión de Inventarios",
-    descripcion: "Aprende a agregar, modificar y eliminar productos o muestras y generar reportes.",
+    titulo: "Capacitación Técnica",
+    descripcion: "Guía completa para administradores y técnicos de la plataforma.",
     detalles: [
-      "Puedes añadir productos con detalles completos de cada ítem.",
-      "Modificar o eliminar registros es rápido y seguro.",
-      "Los reportes se generan automáticamente con información actualizada."
-    ]
-  },
-  {
-    titulo: "Seguridad y Roles",
-    descripcion: "Entiende cómo se manejan los permisos dentro de la app y cómo proteger tus datos.",
-    detalles: [
-      "Cada usuario tiene permisos según su rol asignado.",
-      "Se controla el acceso a módulos sensibles para proteger la información.",
-      "El sistema registra acciones importantes para auditorías internas."
-    ]
-  },
-  {
-    titulo: "Soporte y Ayuda",
-    descripcion: "Conoce los canales de ayuda disponibles y cómo reportar problemas para recibir asistencia rápidamente.",
-    detalles: [
-      "La sección de soporte permite enviar tickets de ayuda.",
-      "También se incluyen tutoriales y documentación en línea.",
-      "Se garantiza respuesta rápida y seguimiento de cada caso."
-    ]
+      "Administradores pueden gestionar usuarios y roles de acceso para mayor seguridad.",
+      "Los técnicos tienen acceso a reportes avanzados, gráficas y exportación de datos.",
+      "La plataforma incluye herramientas de análisis predictivo con IA para anticipar riesgos.",
+      "Se recomienda realizar auditorías mensuales para mantener la integridad de la información.",
+    ],
   },
 ];
 
@@ -68,11 +55,14 @@ export default function CapacitacionIA() {
   const [currentStep, setCurrentStep] = useState(0);
   const [speaking, setSpeaking] = useState(false);
 
+  // ✅ Función de voz IA (más lenta y clara)
   const speakText = (text) => {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'es-MX';
+      utterance.rate = 0.9; // más despacio
+      utterance.pitch = 1;
       utterance.onend = () => setSpeaking(false);
       setSpeaking(true);
       window.speechSynthesis.speak(utterance);
@@ -112,10 +102,12 @@ export default function CapacitacionIA() {
       <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-16'}`}>
         <main className="flex flex-col items-center p-4 md:p-6 flex-1">
 
-          <h1 className="text-3xl md:text-4xl font-bold text-[#1E3A8A] mb-8 text-center">
-            📚 Capacitación Interactiva
+          {/* Título con icono */}
+          <h1 className="text-3xl md:text-4xl font-bold text-[#1E3A8A] mb-8 text-center flex items-center gap-2">
+            <BookOpen className="w-9 h-9 text-[#1E3A8A]" /> Capacitación Interactiva - AireSmart
           </h1>
 
+          {/* Tarjetas */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
             {secciones.map((sec, idx) => (
               <div
@@ -129,6 +121,7 @@ export default function CapacitacionIA() {
             ))}
           </div>
 
+          {/* Modal */}
           {selected && (
             <div className="fixed inset-0 flex justify-center items-center z-50">
               <div
@@ -147,16 +140,7 @@ export default function CapacitacionIA() {
                 <h2 className="text-2xl font-bold text-[#111827] mb-4">{selected.titulo}</h2>
                 <p className="text-[#6B7280] mb-4">{selected.detalles[currentStep]}</p>
 
-                <div className="w-full max-w-sm h-48 overflow-hidden rounded-xl shadow-md mb-4">
-                  <video
-                    src="/videos/senas_explicativo.mp4"
-                    autoPlay
-                    loop
-                    muted
-                    className="w-full h-full object-contain rounded-xl"
-                  />
-                </div>
-
+                {/* Botones navegación */}
                 <div className="flex justify-between items-center mt-4 w-full">
                   <button
                     onClick={prevStep}
@@ -177,6 +161,7 @@ export default function CapacitacionIA() {
                   </button>
                 </div>
 
+                {/* Botón de voz IA */}
                 <div className="mt-4 flex justify-center items-center gap-4">
                   {speaking ? (
                     <button
@@ -197,7 +182,6 @@ export default function CapacitacionIA() {
               </div>
             </div>
           )}
-
         </main>
 
         <Footer />
