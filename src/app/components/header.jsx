@@ -28,10 +28,10 @@ function Header({ sidebarOpen, setSidebarOpen }) {
       {/* Logo / Imagen */}
       <div className="p-4 border-b border-gray-700 flex justify-center items-center">
         <img
-          src="/logo.png" // coloca aquí tu imagen en /public/logo.png
+          src="/img/logo.png" // coloca aquí tu imagen en /public/logo.png
           alt="Logo"
           className={`transition-all duration-500 
-          ${sidebarOpen ? 'w-28 h-12' : 'w-10 h-10'} object-contain`}
+          ${sidebarOpen ? 'w-30 h-15' : 'w-10 h-10'} object-contain`}
         />
       </div>
 

@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { GoogleMap, Marker, InfoWindow, useJsApiLoader } from '@react-google-maps/api';
+import React, { useEffect, useState, useCallback } from 'react';
+import { GoogleMap, Marker, InfoWindow, useJsApiLoader, Polygon } from '@react-google-maps/api';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
 
@@ -15,15 +15,44 @@ const ciudades = [
   { nombre: 'Apatzingán', lat: 19.0833, lng: -102.35 }
 ];
 
+// Coordenadas aproximadas para delimitar el estado de Michoacán
+const michoacanCoords = [
+  { lat: 20.397, lng: -103.520 }, // Noroeste
+  { lat: 20.397, lng: -100.150 }, // Noreste
+  { lat: 17.916, lng: -100.150 }, // Sureste
+  { lat: 17.916, lng: -103.520 }, // Suroeste
+];
+
+// Leyenda de Calidad del Aire
+const aqiLegend = [
+  { level: 1, color: 'green', label: 'Buena' },
+  { level: 2, color: 'yellow', label: 'Moderada' },
+  { level: 3, color: 'orange', label: 'Poco saludable' },
+  { level: 4, color: 'red', label: 'Mala' },
+  { level: 5, color: 'purple', label: 'Muy mala' },
+  { level: null, color: 'blue', label: 'Desconocido' }
+];
+
 export default function MapaGoogleMichoacan() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [ciudadSeleccionada, setCiudadSeleccionada] = useState(null);
   const [datosCiudades, setDatosCiudades] = useState({});
+  const [map, setMap] = useState(null);
 
   // Cargar Google Maps
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSyAv0uz48-sIpfzDw2MKVryibebp95izmNU'
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSyAv0uz48-sIpfzDw2MKVryibebp95izmNU',
+    libraries: ['places']
   });
+
+  // Ajustar el mapa para que se enfoque en Michoacán
+  const onLoad = useCallback((map) => {
+    setMap(map);
+    // Crear límites para enfocar en Michoacán
+    const bounds = new window.google.maps.LatLngBounds();
+    michoacanCoords.forEach(coord => bounds.extend(coord));
+    map.fitBounds(bounds);
+  }, []);
 
   // Llamar datos desde OpenWeather (Clima + Calidad de aire)
   useEffect(() => {
@@ -73,6 +102,18 @@ export default function MapaGoogleMichoacan() {
     }
   };
 
+  // Obtener etiqueta para el AQI
+  const getAqiLabel = (aqi) => {
+    switch (aqi) {
+      case 1: return "Buena";
+      case 2: return "Moderada";
+      case 3: return "Poco saludable";
+      case 4: return "Mala";
+      case 5: return "Muy mala";
+      default: return "Desconocido";
+    }
+  };
+
   if (!isLoaded) return <p className="text-center mt-10">Cargando mapa…</p>;
 
   return (
@@ -83,12 +124,59 @@ export default function MapaGoogleMichoacan() {
           📍 Mapa de Michoacán — Clima y Calidad del Aire
         </h1>
 
-        <div className="w-full max-w-6xl h-[600px] rounded-xl shadow-lg overflow-hidden">
+        <div className="w-full max-w-6xl mb-6 bg-white p-4 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold mb-2">Leyenda de Calidad del Aire</h2>
+          <div className="flex flex-wrap gap-3">
+            {aqiLegend.map((item, index) => (
+              <div key={index} className="flex items-center">
+                <img 
+                  src={`http://maps.google.com/mapfiles/ms/icons/${item.color}-dot.png`} 
+                  alt="" 
+                  className="w-5 h-5 mr-1"
+                />
+                <span>{item.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="w-full max-w-6xl h-[600px] rounded-xl shadow-lg overflow-hidden relative">
           <GoogleMap
             center={{ lat: 19.5, lng: -101.5 }}
             zoom={7}
             mapContainerStyle={{ width: '100%', height: '100%' }}
+            onLoad={onLoad}
+            options={{
+              mapTypeControl: true,
+              streetViewControl: false,
+              minZoom: 7,
+              maxZoom: 12,
+              styles: [
+                {
+                  featureType: "administrative",
+                  elementType: "geometry.stroke",
+                  stylers: [{ color: "#5c5c5c" }, { weight: 1.5 }]
+                },
+                {
+                  featureType: "administrative.province",
+                  elementType: "geometry.stroke",
+                  stylers: [{ color: "#8a2be2" }, { weight: 3 }]
+                }
+              ]
+            }}
           >
+            {/* Resaltar el estado de Michoacán con un polígono semi-transparente */}
+            <Polygon
+              paths={michoacanCoords}
+              options={{
+                fillColor: "#e6f7ff",
+                fillOpacity: 0.2,
+                strokeColor: "#1890ff",
+                strokeOpacity: 0.8,
+                strokeWeight: 2
+              }}
+            />
+
             {ciudades.map((c, idx) => (
               <Marker
                 key={idx}
@@ -114,14 +202,16 @@ export default function MapaGoogleMichoacan() {
                   <p>🌤 {datosCiudades[ciudadSeleccionada].clima}</p>
                   <p>🌡 {datosCiudades[ciudadSeleccionada].temp}°C</p>
                   <p>💧 Humedad: {datosCiudades[ciudadSeleccionada].humedad}%</p>
-                  <p>🌫 AQI: {datosCiudades[ciudadSeleccionada].aqi || 'N/A'}</p>
+                  <p>🌫 Calidad del aire: {getAqiLabel(datosCiudades[ciudadSeleccionada].aqi)}</p>
+                  <p>(AQI: {datosCiudades[ciudadSeleccionada].aqi || 'N/A'})</p>
                 </div>
               </InfoWindow>
             )}
           </GoogleMap>
         </div>
+         <Footer />
       </main>
-      <Footer />
+     
     </div>
   );
 }

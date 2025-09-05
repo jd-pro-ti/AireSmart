@@ -22,8 +22,8 @@ export default function CalidadAireMichoacan() {
   const [estados, setEstados] = useState([
     { nombre: 'Morelia', calidad: 'Buena', nivel: 40 },
     { nombre: 'Uruapan', calidad: 'Moderada', nivel: 90 },
-    { nombre: 'Zamora', calidad: 'Alta', nivel: 140 },
-    { nombre: 'Lázaro Cárdenas', calidad: 'Alta', nivel: 160 },
+    { nombre: 'Zamora', calidad: 'Mala', nivel: 140 },
+    { nombre: 'Lázaro Cárdenas', calidad: 'Mala', nivel: 160 },
     { nombre: 'Zitácuaro', calidad: 'Buena', nivel: 30 },
     { nombre: 'Apatzingán', calidad: 'Moderada', nivel: 80 }
   ]);
@@ -43,9 +43,10 @@ export default function CalidadAireMichoacan() {
 
   useEffect(() => {
     const interval = setInterval(() => {
+      const niveles = [30, 50, 80, 100, 140, 160];
+      const calidades = ['Buena', 'Moderada', 'Mala'];
+
       const nuevosEstados = estados.map((estado) => {
-        const niveles = [30, 50, 80, 100, 140, 160];
-        const calidades = ['Buena', 'Razonablemente buena', 'Moderada', 'Alta'];
         const index = Math.floor(Math.random() * niveles.length);
         return {
           ...estado,
@@ -53,19 +54,34 @@ export default function CalidadAireMichoacan() {
           calidad: calidades[Math.floor(Math.random() * calidades.length)]
         };
       });
+
       setEstados(nuevosEstados);
 
-      const estadoAlerta = nuevosEstados.find((e) => e.nivel > 100);
-      if (estadoAlerta) {
+      // Buscar el peor estado (el de mayor AQI)
+      const peorEstado = [...nuevosEstados].sort((a, b) => b.nivel - a.nivel)[0];
+
+      // Solo mostrar alertas para calidad Moderada o Mala
+      if (peorEstado.nivel > 50) {
+        // Determinar el tipo de alerta según el nivel
+        let tipoAlerta = '';
+        let colorAlerta = '';
+        
+        if (peorEstado.nivel <= 100) {
+          tipoAlerta = 'moderada';
+          colorAlerta = 'bg-[#F59E0B]'; // Naranja
+        } else {
+          tipoAlerta = 'mala';
+          colorAlerta = 'bg-[#EF4444]'; // Rojo
+        }
+
         setAlertaActual({
-          mensaje: `⚠️ ${estadoAlerta.nombre}: Calidad del aire ${estadoAlerta.calidad}`,
-          tipo: 'alerta'
+          mensaje: `⚠️ ${peorEstado.nombre}: Calidad del aire ${peorEstado.calidad} (AQI ${peorEstado.nivel})`,
+          tipo: tipoAlerta,
+          color: colorAlerta
         });
       } else {
-        setAlertaActual({
-          mensaje: '✅ Todos los estados tienen buena calidad del aire',
-          tipo: 'ok'
-        });
+        // Calidad Buena - no mostrar alerta
+        setAlertaActual(null);
       }
     }, 15000);
 
@@ -84,7 +100,7 @@ export default function CalidadAireMichoacan() {
       <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-16'}`}>
         <main className="flex flex-col items-center justify-start p-6 md:p-8 flex-1">
           <h1 className="text-3xl md:text-4xl font-bold text-[#1E3A8A] mb-8 text-center">
-            🌬 Calidad del Aire en Michoacán (Simulada)
+            🌬 Calidad del Aire en Michoacán 
           </h1>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl mb-8">
@@ -141,16 +157,14 @@ export default function CalidadAireMichoacan() {
 
           {alertaActual && (
             <div
-              className={`fixed bottom-4 right-4 p-4 rounded-xl shadow-lg font-semibold text-white ${
-                alertaActual.tipo === 'alerta' ? 'bg-[#EF4444]' : 'bg-[#10B981]'
-              } animate-fadeIn`}
+              className={`fixed bottom-4 right-4 p-4 rounded-xl shadow-lg font-semibold text-white ${alertaActual.color} animate-fadeIn`}
             >
               {alertaActual.mensaje}
             </div>
           )}
         </main>
 
-        <Footer />
+        <Footer/>
       </div>
     </div>
   );

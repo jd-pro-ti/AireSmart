@@ -119,7 +119,7 @@ export default function IAClimaProfesional() {
         <main className="flex flex-col items-center justify-start p-6 md:p-8 flex-1">
 
           <h1 className="text-3xl md:text-4xl font-bold text-[#1E3A8A] mb-8 text-center">
-            🤖 Asistente Profesional de Clima y Calidad del Aire - Michoacán
+            Asistente Profesional de Clima y Calidad del Aire - Michoacán
           </h1>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl mb-10">
@@ -148,7 +148,7 @@ export default function IAClimaProfesional() {
             </h2>
 
             <textarea
-              className="border border-gray-300 rounded-xl p-3 w-full focus:outline-none focus:ring-2 focus:ring-[#3B82F6]"
+              className="border border-gray-300 rounded-xl  text-black p-3 w-full focus:outline-none focus:ring-2 focus:ring-[#3B82F6]"
               rows={2}
               placeholder="Ej: ¿Cómo está la calidad del aire en Morelia?"
               value={pregunta}
