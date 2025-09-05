@@ -5,7 +5,6 @@ import Header from '../../components/header';
 import Footer from '../../components/footer';
 import { Play, Pause, X } from 'lucide-react';
 
-// Datos extendidos de la capacitación
 const secciones = [
   {
     titulo: "Introducción a la App",
@@ -69,7 +68,6 @@ export default function CapacitacionIA() {
   const [currentStep, setCurrentStep] = useState(0);
   const [speaking, setSpeaking] = useState(false);
 
-  // Función para iniciar voz
   const speakText = (text) => {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
@@ -108,13 +106,13 @@ export default function CapacitacionIA() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-[#F0F4F8]">
       <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
       <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-16'}`}>
         <main className="flex flex-col items-center p-4 md:p-6 flex-1">
 
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 text-center">
+          <h1 className="text-3xl md:text-4xl font-bold text-[#1E3A8A] mb-8 text-center">
             📚 Capacitación Interactiva
           </h1>
 
@@ -125,13 +123,12 @@ export default function CapacitacionIA() {
                 onClick={() => openSeccion(sec)}
                 className="bg-white p-6 rounded-xl shadow-md cursor-pointer hover:shadow-xl transition transform hover:-translate-y-1"
               >
-                <h2 className="text-xl font-semibold text-gray-900 mb-2">{sec.titulo}</h2>
-                <p className="text-gray-700">{sec.descripcion}</p>
+                <h2 className="text-xl font-semibold text-[#111827] mb-2">{sec.titulo}</h2>
+                <p className="text-[#6B7280]">{sec.descripcion}</p>
               </div>
             ))}
           </div>
 
-          {/* Modal de explicación IA + video de señas */}
           {selected && (
             <div className="fixed inset-0 flex justify-center items-center z-50">
               <div
@@ -141,16 +138,15 @@ export default function CapacitacionIA() {
 
               <div className="bg-white rounded-2xl p-6 w-11/12 max-w-lg shadow-2xl relative z-10 flex flex-col items-center gap-4">
                 <button
-                  className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+                  className="absolute top-4 right-4 text-[#6B7280] hover:text-[#111827]"
                   onClick={closeModal}
                 >
                   <X size={24} />
                 </button>
 
-                <h2 className="text-2xl font-bold mb-4">{selected.titulo}</h2>
-                <p className="text-gray-700 mb-4">{selected.detalles[currentStep]}</p>
+                <h2 className="text-2xl font-bold text-[#111827] mb-4">{selected.titulo}</h2>
+                <p className="text-[#6B7280] mb-4">{selected.detalles[currentStep]}</p>
 
-                {/* Video de señas explicativo */}
                 <div className="w-full max-w-sm h-48 overflow-hidden rounded-xl shadow-md mb-4">
                   <video
                     src="/videos/senas_explicativo.mp4"
@@ -165,17 +161,17 @@ export default function CapacitacionIA() {
                   <button
                     onClick={prevStep}
                     disabled={currentStep === 0}
-                    className="bg-gray-200 px-4 py-2 rounded-xl disabled:opacity-50 hover:bg-gray-300 transition"
+                    className="bg-[#F0F4F8] text-[#111827] px-4 py-2 rounded-xl disabled:opacity-50 hover:bg-[#E0E7FF] transition"
                   >
                     ← Anterior
                   </button>
 
-                  <span className="text-gray-500">{currentStep + 1}/{selected.detalles.length}</span>
+                  <span className="text-[#6B7280]">{currentStep + 1}/{selected.detalles.length}</span>
 
                   <button
                     onClick={nextStep}
                     disabled={currentStep === selected.detalles.length - 1}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-xl disabled:opacity-50 hover:bg-blue-700 transition"
+                    className="bg-[#1E3A8A] text-white px-4 py-2 rounded-xl disabled:opacity-50 hover:bg-[#3B82F6] transition"
                   >
                     Siguiente →
                   </button>
@@ -185,14 +181,14 @@ export default function CapacitacionIA() {
                   {speaking ? (
                     <button
                       onClick={() => window.speechSynthesis.cancel()}
-                      className="bg-red-500 text-white px-4 py-2 rounded-xl hover:bg-red-600 transition flex items-center gap-2"
+                      className="bg-[#EF4444] text-white px-4 py-2 rounded-xl hover:bg-[#DC2626] transition flex items-center gap-2"
                     >
                       <Pause size={18} /> Detener voz
                     </button>
                   ) : (
                     <button
                       onClick={() => speakText(selected.detalles[currentStep])}
-                      className="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-600 transition flex items-center gap-2"
+                      className="bg-[#10B981] text-white px-4 py-2 rounded-xl hover:bg-[#059669] transition flex items-center gap-2"
                     >
                       <Play size={18} /> Escuchar
                     </button>

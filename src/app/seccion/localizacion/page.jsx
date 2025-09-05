@@ -12,18 +12,18 @@ const climaTipos = ["Soleado", "Nublado", "Lluvias ligeras", "Tormenta", "Noche 
 
 // Colores e iconos de calidad
 const calidadInfo = {
-  "Buena": { color: "#16A34A", icon: <CheckCircle size={24} className="text-green-600" /> },
-  "Moderada": { color: "#FACC15", icon: <MinusCircle size={24} className="text-yellow-500" /> },
-  "Mala": { color: "#DC2626", icon: <AlertCircle size={24} className="text-red-600" /> },
+  "Buena": { color: "#10B981", icon: <CheckCircle size={24} className="text-[#10B981]" /> },
+  "Moderada": { color: "#F59E0B", icon: <MinusCircle size={24} className="text-[#F59E0B]" /> },
+  "Mala": { color: "#EF4444", icon: <AlertCircle size={24} className="text-[#EF4444]" /> },
 };
 
 // Iconos de clima
 const climaIconos = {
-  "Soleado": <Sun size={28} className="text-yellow-500" />,
-  "Nublado": <Cloud size={28} className="text-gray-400" />,
-  "Lluvias ligeras": <CloudRain size={28} className="text-blue-400" />,
-  "Tormenta": <CloudRain size={28} className="text-indigo-600" />,
-  "Noche despejada": <Sun size={28} className="text-gray-800" />,
+  "Soleado": <Sun size={28} className="text-[#F59E0B]" />,
+  "Nublado": <Cloud size={28} className="text-[#6B7280]" />,
+  "Lluvias ligeras": <CloudRain size={28} className="text-[#3B82F6]" />,
+  "Tormenta": <CloudRain size={28} className="text-[#1E3A8A]" />,
+  "Noche despejada": <Sun size={28} className="text-[#111827]" />,
 };
 
 // Función para generar calidad/clima aleatoria
@@ -35,7 +35,6 @@ export default function Localizacion() {
   const [ciudadSeleccionada, setCiudadSeleccionada] = useState(null);
   const [datosCiudades, setDatosCiudades] = useState([]);
 
-  // Inicializa datos de ciudades
   useEffect(() => {
     const inicial = ciudades.map(ciudad => ({
       ciudad,
@@ -46,7 +45,6 @@ export default function Localizacion() {
     setDatosCiudades(inicial);
   }, []);
 
-  // Actualiza cada 10 segundos con animación
   useEffect(() => {
     const interval = setInterval(() => {
       setDatosCiudades(prev => 
@@ -62,13 +60,12 @@ export default function Localizacion() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-blue-100 flex">
-      {/* Sidebar */}
+    <div className="min-h-screen bg-[#F0F4F8] flex">
       <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
       <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarOpen ? "ml-64" : "ml-16"}`}>
         <main className="p-6 flex-1">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6 text-center">
+          <h1 className="text-3xl font-bold text-[#1E3A8A] mb-6 text-center">
             🌍 Ubicación, Clima y Calidad del Aire - Michoacán
           </h1>
 
@@ -82,15 +79,15 @@ export default function Localizacion() {
               >
                 {/* Iconos */}
                 <div className="flex flex-col items-center gap-2">
-                  <MapPin size={24} className="text-blue-500" />
-                  {climaIconos[d.clima] || <Sun size={28} className="text-yellow-500" />}
+                  <MapPin size={24} className="text-[#3B82F6]" />
+                  {climaIconos[d.clima] || <Sun size={28} className="text-[#F59E0B]" />}
                   {calidadInfo[d.calidad].icon}
                 </div>
                 {/* Info */}
                 <div className="flex flex-col">
-                  <h2 className="font-bold text-xl text-gray-800 mb-1">{d.ciudad}</h2>
-                  <p className="text-gray-600">Clima: <span className="font-semibold">{d.clima}</span></p>
-                  <p className="text-gray-600">Temperatura: <span className="font-semibold">{d.temperatura}°C</span></p>
+                  <h2 className="font-bold text-xl text-[#111827] mb-1">{d.ciudad}</h2>
+                  <p className="text-[#6B7280]">Clima: <span className="font-semibold">{d.clima}</span></p>
+                  <p className="text-[#6B7280]">Temperatura: <span className="font-semibold">{d.temperatura}°C</span></p>
                   <p className="font-semibold" style={{ color: calidadInfo[d.calidad].color }}>
                     Calidad del aire: {d.calidad}
                   </p>
@@ -101,13 +98,13 @@ export default function Localizacion() {
 
           {/* Gráfica de barras animada */}
           <div className="bg-white p-6 rounded-xl shadow-lg mb-10">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4 text-center">
+            <h2 className="text-xl font-semibold text-[#111827] mb-4 text-center">
               Calidad del Aire por Estado (Actualización en Tiempo Real)
             </h2>
             <ResponsiveContainer width="100%" height={350}>
               <BarChart data={datosCiudades}>
-                <XAxis dataKey="ciudad" stroke="#000" />
-                <YAxis stroke="#000" />
+                <XAxis dataKey="ciudad" stroke="#111827" />
+                <YAxis stroke="#111827" />
                 <Tooltip />
                 <Legend />
                 <Bar dataKey="temperatura" name="Temperatura (°C)" animationDuration={1000}>
@@ -129,18 +126,18 @@ export default function Localizacion() {
                   onClick={() => setCiudadSeleccionada(null)}
                 >✖</button>
                 <div className="flex justify-center gap-4 mb-4">
-                  <MapPin size={24} className="text-blue-500" />
+                  <MapPin size={24} className="text-[#3B82F6]" />
                   {climaIconos[ciudadSeleccionada.clima]}
                   {calidadInfo[ciudadSeleccionada.calidad].icon}
                 </div>
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">{ciudadSeleccionada.ciudad}</h2>
-                <p className="text-gray-700 mb-2">Clima: {ciudadSeleccionada.clima}</p>
-                <p className="text-gray-700 mb-2">Temperatura: {ciudadSeleccionada.temperatura}°C</p>
+                <h2 className="text-2xl font-bold text-[#111827] mb-4">{ciudadSeleccionada.ciudad}</h2>
+                <p className="text-[#6B7280] mb-2">Clima: {ciudadSeleccionada.clima}</p>
+                <p className="text-[#6B7280] mb-2">Temperatura: {ciudadSeleccionada.temperatura}°C</p>
                 <p className="mb-2 font-semibold" style={{ color: calidadInfo[ciudadSeleccionada.calidad].color }}>
                   Calidad del aire: {ciudadSeleccionada.calidad}
                 </p>
                 <button
-                  className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  className="mt-4 px-4 py-2 bg-[#1E3A8A] text-white rounded-lg hover:bg-[#3B82F6]"
                   onClick={() => setCiudadSeleccionada(null)}
                 >
                   Cerrar

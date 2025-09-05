@@ -1,15 +1,7 @@
 'use client';
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { 
-  MapPin, 
-  Map, 
-  Bell, 
-  LineChart, 
-  BookOpen, 
-  Home, 
-  LogOut 
-} from "lucide-react";
+import { MapPin, Map, Bell, LineChart, BookOpen, Home, LogOut } from "lucide-react";
 
 function Header({ sidebarOpen, setSidebarOpen }) {
   const router = useRouter();
@@ -26,7 +18,7 @@ function Header({ sidebarOpen, setSidebarOpen }) {
   return (
     <div
       className={`fixed top-0 left-0 h-full 
-      bg-gradient-to-b from-blue-200 via-blue-300 to-blue-200 
+      bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 
       shadow-2xl z-50 backdrop-blur-sm
       transition-all duration-500 ease-in-out
       ${sidebarOpen ? 'w-64' : 'w-20'} group`}
@@ -34,7 +26,7 @@ function Header({ sidebarOpen, setSidebarOpen }) {
       onMouseLeave={() => setSidebarOpen(false)}
     >
       {/* Logo / Imagen */}
-      <div className="p-4 border-b border-blue-400 flex justify-center items-center">
+      <div className="p-4 border-b border-gray-700 flex justify-center items-center">
         <img
           src="/logo.png" // coloca aquí tu imagen en /public/logo.png
           alt="Logo"
@@ -49,11 +41,11 @@ function Header({ sidebarOpen, setSidebarOpen }) {
           <button
             key={idx}
             onClick={() => router.push(item.path)}
-            className="flex items-center gap-3 p-3 rounded-lg text-left text-black 
-              hover:bg-blue-400/40 hover:shadow-[0_0_15px_#22c55e] 
+            className="flex items-center gap-3 p-3 rounded-lg text-left text-white 
+              hover:bg-gray-700/50 hover:shadow-[0_0_15px_#00f6ff] 
               transition-all duration-300"
           >
-            <item.icon size={26} className="text-green-500 group-hover:animate-pulse" />
+            <item.icon size={24} className="text-cyan-400 group-hover:animate-pulse" />
             <span
               className={`transition-opacity duration-300 text-sm font-semibold
               ${sidebarOpen ? 'opacity-100' : 'opacity-0 hidden group-hover:block'}`}
@@ -67,12 +59,12 @@ function Header({ sidebarOpen, setSidebarOpen }) {
       {/* Botón inferior */}
       <div className="absolute bottom-4 w-full px-3">
         <button
-          onClick={() => router.push('/logout')} // Cambia la ruta si es necesario
-          className="flex items-center gap-3 w-full p-3 rounded-lg text-black 
-            hover:bg-red-500/40 hover:shadow-[0_0_15px_#ef4444] 
+          onClick={() => router.push('/logout')} // Cambia ruta según tu necesidad
+          className="flex items-center gap-3 w-full p-3 rounded-lg text-white 
+            hover:bg-red-600 hover:shadow-[0_0_15px_#ff0000] 
             transition-all duration-300"
         >
-          <LogOut size={26} className="text-green-500" />
+          <LogOut size={24} className="text-red-400" />
           <span
             className={`transition-opacity duration-300 text-sm font-semibold
             ${sidebarOpen ? 'opacity-100' : 'opacity-0 hidden group-hover:block'}`}

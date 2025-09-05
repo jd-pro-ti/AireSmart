@@ -29,19 +29,18 @@ export default function CalidadAireMichoacan() {
   ]);
 
   const getColorByCalidad = (nivel) => {
-    if (nivel <= 50) return 'text-green-600';
-    if (nivel <= 100) return 'text-yellow-500';
-    if (nivel <= 150) return 'text-orange-500';
-    return 'text-red-600';
+    if (nivel <= 50) return 'text-[#10B981]';
+    if (nivel <= 100) return 'text-[#F59E0B]';
+    if (nivel <= 150) return 'text-[#EF4444]';
+    return 'text-[#EF4444]';
   };
 
   const getClimaIcon = (nivel) => {
-    if (nivel <= 50) return <Sun size={28} className="text-yellow-400" />;
-    if (nivel <= 100) return <Info size={28} className="text-gray-400" />;
-    return <CloudRain size={28} className="text-blue-500" />;
+    if (nivel <= 50) return <Sun size={28} className="text-[#F59E0B]" />;
+    if (nivel <= 100) return <Info size={28} className="text-[#6B7280]" />;
+    return <CloudRain size={28} className="text-[#3B82F6]" />;
   };
 
-  // Simular cambio de calidad de aire cada 15s
   useEffect(() => {
     const interval = setInterval(() => {
       const nuevosEstados = estados.map((estado) => {
@@ -56,7 +55,6 @@ export default function CalidadAireMichoacan() {
       });
       setEstados(nuevosEstados);
 
-      // Crear alerta del primer estado con nivel crítico
       const estadoAlerta = nuevosEstados.find((e) => e.nivel > 100);
       if (estadoAlerta) {
         setAlertaActual({
@@ -74,19 +72,18 @@ export default function CalidadAireMichoacan() {
     return () => clearInterval(interval);
   }, [estados]);
 
-  // Datos para gráfica de línea
   const dataChart = estados.map((e) => ({
     nombre: e.nombre,
     nivel: e.nivel
   }));
 
   return (
-    <div className="flex min-h-screen bg-blue-50">
+    <div className="flex min-h-screen bg-[#F0F4F8]">
       <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
       <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-16'}`}>
         <main className="flex flex-col items-center justify-start p-6 md:p-8 flex-1">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 text-center">
+          <h1 className="text-3xl md:text-4xl font-bold text-[#1E3A8A] mb-8 text-center">
             🌬 Calidad del Aire en Michoacán (Simulada)
           </h1>
 
@@ -99,22 +96,21 @@ export default function CalidadAireMichoacan() {
               >
                 <div className="flex items-center gap-3">
                   {getClimaIcon(estado.nivel)}
-                  <h2 className="font-bold text-lg text-black">{estado.nombre}</h2>
+                  <h2 className="font-bold text-lg text-[#111827]">{estado.nombre}</h2>
                 </div>
-                <p className="text-gray-700">Calidad: {estado.calidad}</p>
-                <p className="text-gray-700">Nivel AQI: {estado.nivel}</p>
+                <p className="text-[#6B7280]">Calidad: {estado.calidad}</p>
+                <p className="text-[#6B7280]">Nivel AQI: {estado.nivel}</p>
               </div>
             ))}
           </div>
 
-          {/* Gráfica de línea */}
           <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-6xl mb-8">
-            <h2 className="text-xl font-semibold text-black mb-4 text-center">Evolución de Calidad del Aire</h2>
+            <h2 className="text-xl font-semibold text-[#111827] mb-4 text-center">Evolución de Calidad del Aire</h2>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={dataChart}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="nombre" stroke="#000" />
-                <YAxis label={{ value: "AQI", angle: -90, position: "insideLeft", fill: "#000" }} stroke="#000" />
+                <XAxis dataKey="nombre" stroke="#111827" />
+                <YAxis label={{ value: "AQI", angle: -90, position: "insideLeft", fill: "#111827" }} stroke="#111827" />
                 <Tooltip />
                 <Legend />
                 <Line type="monotone" dataKey="nivel" stroke="#3B82F6" strokeWidth={3} dot={{ r: 6, fill: '#3B82F6' }} />
@@ -122,7 +118,6 @@ export default function CalidadAireMichoacan() {
             </ResponsiveContainer>
           </div>
 
-          {/* Modal Estado */}
           {selectedEstado && (
             <div className="fixed inset-0 flex justify-center items-center z-50">
               <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={() => setSelectedEstado(null)}></div>
@@ -134,21 +129,20 @@ export default function CalidadAireMichoacan() {
                   ✖
                 </button>
                 <div className="flex justify-center mb-4">{getClimaIcon(selectedEstado.nivel)}</div>
-                <h2 className="text-2xl font-bold text-black mb-2">{selectedEstado.nombre}</h2>
-                <p className="text-gray-700 mb-2">Calidad del aire: {selectedEstado.calidad}</p>
-                <p className="text-gray-700 mb-2">Nivel AQI: {selectedEstado.nivel}</p>
-                <button className="mt-4 px-5 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition" onClick={() => setSelectedEstado(null)}>
+                <h2 className="text-2xl font-bold text-[#111827] mb-2">{selectedEstado.nombre}</h2>
+                <p className="text-[#6B7280] mb-2">Calidad del aire: {selectedEstado.calidad}</p>
+                <p className="text-[#6B7280] mb-2">Nivel AQI: {selectedEstado.nivel}</p>
+                <button className="mt-4 px-5 py-2 bg-[#1E3A8A] text-white rounded-xl hover:bg-[#3B82F6] transition" onClick={() => setSelectedEstado(null)}>
                   Cerrar
                 </button>
               </div>
             </div>
           )}
 
-          {/* Mensaje emergente */}
           {alertaActual && (
             <div
-              className={`fixed bottom-4 right-4 p-4 rounded-xl shadow-lg text-white font-semibold ${
-                alertaActual.tipo === 'alerta' ? 'bg-red-600' : 'bg-green-600'
+              className={`fixed bottom-4 right-4 p-4 rounded-xl shadow-lg font-semibold text-white ${
+                alertaActual.tipo === 'alerta' ? 'bg-[#EF4444]' : 'bg-[#10B981]'
               } animate-fadeIn`}
             >
               {alertaActual.mensaje}
