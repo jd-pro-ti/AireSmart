@@ -18,20 +18,20 @@ function Header({ sidebarOpen, setSidebarOpen }) {
   return (
     <div
       className={`fixed top-0 left-0 h-full 
-      bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 
+      bg-gradient-to-b from-emerald-600 via-emerald-500 to-emerald-600 
       shadow-2xl z-50 backdrop-blur-sm
       transition-all duration-500 ease-in-out
       ${sidebarOpen ? 'w-64' : 'w-20'} group`}
       onMouseEnter={() => setSidebarOpen(true)}
       onMouseLeave={() => setSidebarOpen(false)}
     >
-      {/* Logo / Imagen */}
-      <div className="p-4 border-b border-gray-700 flex justify-center items-center">
+      {/* Logo */}
+      <div className="p-4 border-b border-emerald-400/40 flex justify-center items-center bg-emerald-700/20">
         <img
-          src="/img/logo.png" // coloca aquí tu imagen en /public/logo.png
+          src="/img/logo.jpg"
           alt="Logo"
           className={`transition-all duration-500 
-          ${sidebarOpen ? 'w-30 h-15' : 'w-10 h-10'} object-contain`}
+          ${sidebarOpen ? 'w-28 h-16' : 'w-10 h-10'} object-contain`}
         />
       </div>
 
@@ -42,10 +42,10 @@ function Header({ sidebarOpen, setSidebarOpen }) {
             key={idx}
             onClick={() => router.push(item.path)}
             className="flex items-center gap-3 p-3 rounded-lg text-left text-white 
-              hover:bg-gray-700/50 hover:shadow-[0_0_15px_#00f6ff] 
+              hover:bg-emerald-400/30 hover:shadow-[0_0_10px_#8EF6B0]
               transition-all duration-300"
           >
-            <item.icon size={24} className="text-cyan-400 group-hover:animate-pulse" />
+            <item.icon size={24} className="text-emerald-200 group-hover:text-white transition-all" />
             <span
               className={`transition-opacity duration-300 text-sm font-semibold
               ${sidebarOpen ? 'opacity-100' : 'opacity-0 hidden group-hover:block'}`}
@@ -59,12 +59,12 @@ function Header({ sidebarOpen, setSidebarOpen }) {
       {/* Botón inferior */}
       <div className="absolute bottom-4 w-full px-3">
         <button
-          onClick={() => router.push('/logout')} // Cambia ruta según tu necesidad
+          onClick={() => router.push('/logout')}
           className="flex items-center gap-3 w-full p-3 rounded-lg text-white 
-            hover:bg-red-600 hover:shadow-[0_0_15px_#ff0000] 
+            hover:bg-emerald-400/40 hover:shadow-[0_0_10px_#6EE7B7] 
             transition-all duration-300"
         >
-          <LogOut size={24} className="text-red-400" />
+          <LogOut size={24} className="text-emerald-100" />
           <span
             className={`transition-opacity duration-300 text-sm font-semibold
             ${sidebarOpen ? 'opacity-100' : 'opacity-0 hidden group-hover:block'}`}

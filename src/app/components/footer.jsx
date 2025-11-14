@@ -8,7 +8,7 @@ export default function Footer() {
         
         {/* Nombre del proyecto */}
         <p className="text-sm font-semibold">
-          © {new Date().getFullYear()} AIRSMART - Todos los derechos reservados
+          © {new Date().getFullYear()} AIR Quiality - Todos los derechos reservados
         </p>
         
         {/* Links */}

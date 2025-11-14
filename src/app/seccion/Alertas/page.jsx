@@ -100,7 +100,7 @@ export default function CalidadAireMichoacan() {
       <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-16'}`}>
         <main className="flex flex-col items-center justify-start p-6 md:p-8 flex-1">
           <h1 className="text-3xl md:text-4xl font-bold text-[#1E3A8A] mb-8 text-center">
-            🌬 Calidad del Aire en Michoacán 
+             Calidad del Aire en Michoacán 
           </h1>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl mb-8">

@@ -9,9 +9,9 @@ import { Play, Pause, X, BookOpen } from 'lucide-react';
 const secciones = [
   {
     titulo: "Uso del Sistema",
-    descripcion: "Aprende cómo navegar en AireSmart, desde el inicio de sesión hasta el monitoreo en tiempo real.",
+    descripcion: "Aprende cómo navegar en Air Quality, desde el inicio de sesión hasta el monitoreo en tiempo real.",
     detalles: [
-      "Bienvenido a AireSmart, una plataforma diseñada para monitorear la calidad del aire en tiempo real.",
+      "Bienvenido a Air Quality, una plataforma diseñada para monitorear la calidad del aire en tiempo real.",
       "El sistema permite visualizar mapas interactivos, reportes automáticos y notificaciones instantáneas.",
       "Puedes acceder a información específica de tu ciudad y consultar la calidad del aire clasificada por colores.",
       "La plataforma está diseñada con un enfoque amigable, intuitivo y adaptable para todo tipo de usuarios.",
@@ -104,7 +104,7 @@ export default function CapacitacionIA() {
 
           {/* Título con icono */}
           <h1 className="text-3xl md:text-4xl font-bold text-[#1E3A8A] mb-8 text-center flex items-center gap-2">
-            <BookOpen className="w-9 h-9 text-[#1E3A8A]" /> Capacitación Interactiva - AireSmart
+            <BookOpen className="w-9 h-9 text-[#1E3A8A]" /> Capacitación Interactiva - AirSmart
           </h1>
 
           {/* Tarjetas */}
